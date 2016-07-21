@@ -7,6 +7,7 @@ let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let redis = require('redis');
 let redisStore = require('connect-redis')(session);
+
 let client = redis.createClient({
 	host: env.APP_REDIS_HOST
 });
@@ -40,6 +41,11 @@ app.use(session({
 	resave: false, // don't save session if unmodified,
 	cookie: { expires: true, maxAge: 5 * 60 * 1000 }
 }));
+
+
+
+var seq = require('./config/database');
+console.log("seq test");
 
 
 app.get('/session/set/:value', function (req, res) {
