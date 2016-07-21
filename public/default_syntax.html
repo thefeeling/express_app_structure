@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <meta charset="utf-8">
+      <title></title>
+</head>
+<body>
+
+      <div id="demo" v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">
+            {{fullName}}
+            <br>
+            <span>{{contentYn ? 'YES' : 'NO'}}</span>
+            <br>
+            <a v-bind:href="url">naver</a>
+            <a v-on:click="someThing">something?</a>
+
+            <br>
+            -------------------------------------------
+            <br>
+            <a :href="url">naver</a>
+            <a @click="someThing">something?</a>
+
+            <br>
+            -------------------------------------------
+            <br>
+            <span>Conditional Rendering</span>
+            <template v-if="contentYn">
+                  <h1>Title</h1>
+                  <p>Paragraph 1</p>
+                  <p>Paragraph 2</p>
+            </template>
+            <div v-if="Math.random() > 0.5">
+                  Sorry
+            </div>
+            <div v-else>
+                  Not sorry
+            </div>
+
+
+            <br>
+            -------------------------------------------
+            <br>
+            <span>List Rendering</span>
+            <ul id="example-1">
+                  <li v-for="item in items">
+                        {{ item.message }}
+                  </li>
+            </ul>
+            <div v-for="(index, item) in items">
+                  {{ index }} {{ item.message }}
+            </div>
+
+            <ul>
+                  <template v-for="item in items">
+                        <li>{{ item.msg }}</li>
+                  </template>
+            </ul>
+
+
+
+            <br>
+            -------------------------------------------
+            <br>
+            <span>Methods / Event</span>
+            <div>
+                  <button v-on:click="greet('1234')">Greet</button>
+            </div>
+
+
+      </div>
+
+
+
+      <script src="//code.jquery.com/jquery.min.js"></script>
+      <script src="https://npmcdn.com/vue@1.0.26/dist/vue.min.js"></script>
+      <script>
+      $(function(){
+            var vm = new Vue({
+                  el: '#demo',
+                  data: {
+                        cnt : 1,
+                        activeColor: 'red',
+                        fontSize: 30,
+                        firstName: 'Foo',
+                        lastName: 'Bar',
+                        contentYn : true,
+                        url : "http://www.naver.com",
+                        someThing : function(){
+                              vm.firstName = "daniel choi" + (vm.cnt++);
+                        },
+                        items: [
+                              { message: 'Foo', msg:'FooMsg' },
+                              { message: 'Bar', msg:'BarMsg' }
+                        ]
+                  },
+                  methods : {
+                        greet: function (msg) {
+                              alert(typeof msg);
+                              alert(msg);
+                        }
+                  },
+                  computed: {
+                        fullName: {
+                              // getter
+                              get: function () {
+                                    return this.firstName + ' ' + this.lastName;
+                              },
+                              // setter
+                              set: function (newValue) {
+                                    var names = newValue.split(' ')
+                                    this.firstName = names[0]
+                                    this.lastName = names[names.length - 1]
+                              }
+                        }
+                  }
+            });
+      })
+      </script>
+</body>
+</html>

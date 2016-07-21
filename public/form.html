@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <meta charset="utf-8">
+      <title></title>
+</head>
+<body>
+
+      <div id="demo">
+            <p>name is: {{ name }}</p>
+            <p>age is: {{ age }}</p>
+            <p>address is: {{ address }}</p>
+            <p>msg is: {{ msg }}</p>
+            <br>
+
+            <form id="frm" action="">
+                  <input type="text" name="name" v-model="name" placeholder="name">
+                  <input type="text" name="age" v-model="age" placeholder="age" number>
+                  <input type="text" name="address" v-model="address" placeholder="address">
+                  <input type="text" name="msg" v-model="msg" placeholder="msg">
+            </form>
+            <a @click='send'>Send</a>
+      </div>
+
+
+
+      <script src="//code.jquery.com/jquery.min.js"></script>
+      <script src="https://npmcdn.com/vue@1.0.26/dist/vue.min.js"></script>
+      <script>
+      $(function(){
+            var vm = new Vue({
+                  el: '#demo',
+                  data: {
+                        name : "",
+                        age : "",
+                        address : "",
+                        msg : ""
+                  },
+                  methods : {
+                        send : function(){
+                              console.log($("#frm").serializeArray());
+                        }
+                  },
+                  computed: {
+
+                  }
+            });
+      })
+      </script>
+</body>
+</html>
