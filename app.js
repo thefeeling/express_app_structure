@@ -7,16 +7,19 @@ let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let redis = require('redis');
 let redisStore = require('connect-redis')(session);
-
 let client = redis.createClient({
 	host: env.APP_REDIS_HOST
 });
+
+// sequelize
+var models = require('./models');
+
+
 
 function whiteList(req, res, next) {
 	console.log(req.ip);
 	next();
 }
-
 
 // config
 app.use(whiteList);
@@ -44,32 +47,12 @@ app.use(session({
 
 
 
-var seq = require('./config/database');
-console.log("seq test");
-
-
-app.get('/session/set/:value', function (req, res) {
-	if (req.session.userSession) {
-		res.send("already auth");
-	}
-	else {
-		req.session.userSession = req.params.value;
-		req.session.save(function () {
-			res.send('session written in Redis successfully');
-		});
-	}
-});
-
-app.get('/session/get/', function (req, res) {
-	if (req.session.userSession)
-		res.send('the session value stored in Redis is: ' + req.session.userSession);
-	else
-		res.send("no session value stored in Redis ");
-});
-
 // routes
 app.use('/content', require('./routes/content'));
 app.use('/mypage', require('./routes/mypage'));
+app.use('/user', require('./routes/user'));
+
+
 
 app.listen(env.APP_PORT, function () {
 	console.log(`Express Folder Structure App Init Port : ${env.APP_PORT}`);

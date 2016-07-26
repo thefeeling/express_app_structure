@@ -57,8 +57,6 @@ switch(process.env.NODE_ENV) {
 		appInit.DB_POOL_MIN  = 1;
 		appInit.DB_POOL_IDLE = 10;
 
-
-
 		break;
 };
 module.exports = appInit;
