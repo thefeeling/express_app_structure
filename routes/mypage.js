@@ -15,12 +15,12 @@ function authentication(req, res, next){
 }
 
 // timeLog middleware
-function timeLog(req, res, next){
-	console.log('Time: ', Date.now());
-	next();
-}
+//function timeLog(req, res, next){
+//	console.log('Time: ', Date.now());
+//	next();
+//}
+//router.use(timeLog)
 
-router.use(timeLog)
 router.use(authentication);
 
 

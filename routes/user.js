@@ -37,20 +37,38 @@ router.post('/login', (req,res)=>{
 
 	models.User.findOne({
 		where : {
-			"email"    : email ,
-			"password" : password
+			"email"    : email
 		}
 	})
 	.then((result)=>{
+		return new Promise((resolve, reject) => {
+			if(!result){
+				reject(new Error("AuthError::Do Not Have AccountInfo"))
+			}
+			else{
+				let userSaltHex = result.password.substring(0,32);
+				let userPassHex = result.password.substring(32,96);
+				let authenticate = (err, key) => {
+					if (err) {reject(err);}
+					console.log("key.toString('hex') : " + key.toString('hex'));
+					console.log("userPassHex : " + userPassHex);
+					key.toString('hex') === userPassHex ? 
+					resolve(result) : reject("AuthError::Invalid Password")					
+				}
+				crypto.pbkdf2(password, userSaltHex, 1000, 32, 'sha512', authenticate);
+			}
+		})
+	})
+	.then((result) => {
 		req.session.userSession = result;
 		req.session.save(()=>{
 			res.json({
 				msg : "login_success"
 			});
-		});		
-
+		});				
 	})
 	.catch((err)=>{
+		console.dir(err);
 		res.json({
 			msg : "failure"
 		});
@@ -72,12 +90,10 @@ router.get('/logout', (req,res)=>{
 });
 
 
-
 router.post('/join', (req, res)=>{
 	var email = req.body.email;
 	var password = req.body.password;
 	
-	// http://exploringjs.com/es6/ch_promises.html
 	((params) => {
 		return new Promise((resolve, reject) => {
 			crypto.randomBytes(16, (err, buf) => {
@@ -98,7 +114,7 @@ router.post('/join', (req, res)=>{
 				}
 				let hashedPassword = salt + key.toString('hex');
 				resolve(hashedPassword)
-			});			
+			});
 		})
 	})
 	.then((hashedPassword) => {
@@ -115,7 +131,6 @@ router.post('/join', (req, res)=>{
 		res.send('failure');
 	})
 });
-
 
 
 module.exports = router;

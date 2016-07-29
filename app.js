@@ -15,7 +15,6 @@ let client = redis.createClient({
 var models = require('./models');
 
 
-
 function whiteList(req, res, next) {
 	console.log(req.ip);
 	next();

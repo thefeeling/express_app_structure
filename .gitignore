@@ -42,3 +42,7 @@ jspm_packages
 
 # IDE
 .vscode
+
+
+# Write a Reference Markdown
+references.md
