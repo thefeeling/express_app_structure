@@ -1,3 +1,8 @@
+/**
+ * Model add && DB Connect
+ */
+
+
 let fs = require('fs');
 let path = require('path');
 let ENV = require('../config/env');

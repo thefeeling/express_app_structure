@@ -1,8 +1,12 @@
-let express = require('express');
-let router = express.Router();
-let models = require('../models');
-let crypto = require('crypto');
+const express = require('express');
+const router = express.Router();
+const models = require('../models');
+const crypto = require('crypto');
+const logger = require('../config/logger');
 
+/**
+ * 
+ */
 router.get('/index', (req, res)=> {
 	if (req.session.userSession) {
 		res.json(req.session.userSession);
@@ -13,6 +17,10 @@ router.get('/index', (req, res)=> {
 	}
 });
 
+
+/**
+ * 
+ */
 router.get('/login', (req, res)=> {
 	if (req.session.userSession) {
 		res.json({
@@ -25,6 +33,10 @@ router.get('/login', (req, res)=> {
 	}
 });
 
+
+/**
+ * 
+ */
 router.post('/login', (req,res)=>{
 	var email = req.body.email;
 	var password = req.body.password;
@@ -48,19 +60,24 @@ router.post('/login', (req,res)=>{
 			else{
 				let userSaltHex = result.password.substring(0,32);
 				let userPassHex = result.password.substring(32,96);
+				
 				let authenticate = (err, key) => {
 					if (err) {reject(err);}
-					console.log("key.toString('hex') : " + key.toString('hex'));
-					console.log("userPassHex : " + userPassHex);
+					
+					logger.debug("key.toString('hex') : " + key.toString('hex'));
+					logger.debug("userPassHex : " + userPassHex);
+
 					key.toString('hex') === userPassHex ? 
 					resolve(result) : reject("AuthError::Invalid Password")					
 				}
+
 				crypto.pbkdf2(password, userSaltHex, 1000, 32, 'sha512', authenticate);
 			}
 		})
 	})
 	.then((result) => {
 		req.session.userSession = result;
+		logger.info(`userSession create`);		
 		req.session.save(()=>{
 			res.json({
 				msg : "login_success"
@@ -68,13 +85,17 @@ router.post('/login', (req,res)=>{
 		});				
 	})
 	.catch((err)=>{
-		console.dir(err);
+		logger.error(`${err.name} // ${err.message}`);
 		res.json({
 			msg : "failure"
 		});
 	})
 });
 
+
+/**
+ * 
+ */
 router.get('/logout', (req,res)=>{
 	if (req.session.userSession) {
 		req.session.destroy();
@@ -90,6 +111,10 @@ router.get('/logout', (req,res)=>{
 });
 
 
+
+/**
+ * 
+ */
 router.post('/join', (req, res)=>{
 	var email = req.body.email;
 	var password = req.body.password;
@@ -101,7 +126,7 @@ router.post('/join', (req, res)=>{
 					reject(err);
 				}
 				let randomSaltStr = buf.toString('hex');
-				console.log(`${buf.length} bytes of random data: ${buf.toString('hex')}`);
+				logger.debug(`${buf.length} bytes of random data: ${buf.toString('hex')}`);
 				resolve(randomSaltStr);
 			});			
 		});		
@@ -118,7 +143,7 @@ router.post('/join', (req, res)=>{
 		})
 	})
 	.then((hashedPassword) => {
-		return models.User.create({ email: email, password : hashedPassword });	
+		return models.User.create({ email: email, password : hashedPassword });
 	})
 	.then((result) => {
 		if (result) {
@@ -128,6 +153,7 @@ router.post('/join', (req, res)=>{
 		}		
 	})
 	.catch(function(err){
+		logger.error(err.toString());
 		res.send('failure');
 	})
 });

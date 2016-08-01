@@ -4,7 +4,7 @@ const router = express.Router();
 // Common Logger
 const logger = require('../config/logger');
 
-router.use('/api', require("./api/content")); // API
+//router.use('/api', require("./api/content")); // API
 
 //router.use(function timeLog(req, res, next) {
 //	console.log('Time: ', Date.now());

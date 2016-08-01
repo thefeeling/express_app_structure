@@ -1,7 +1,8 @@
 let env = require('./config/env');
+let logger = require('./config/logger');
 let express = require('express');
 let app = express();
-let logger = require('morgan');
+let httpLogger = require('morgan');
 let bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser');
 let session = require('express-session');
@@ -15,14 +16,7 @@ let client = redis.createClient({
 var models = require('./models');
 
 
-function whiteList(req, res, next) {
-	console.log(req.ip);
-	next();
-}
-
-// config
-app.use(whiteList);
-app.use(logger(env.APP_LOG_LEVEL));
+app.use(httpLogger(env.APP_LOG_LEVEL));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('trust proxy', true);
@@ -46,13 +40,10 @@ app.use(session({
 
 
 
-// routes
-app.use('/content', require('./routes/content'));
-app.use('/mypage', require('./routes/mypage'));
-app.use('/user', require('./routes/user'));
-
+// routes/index.js all routes load
+app.use('/api', require('./routes')); 
 
 
 app.listen(env.APP_PORT, function () {
-	console.log(`Express Folder Structure App Init Port : ${env.APP_PORT}`);
+	logger.info(`Express Folder Structure App Init Port : ${env.APP_PORT}`);
 });
