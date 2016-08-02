@@ -116,8 +116,8 @@ router.get('/logout', (req,res)=>{
  * 
  */
 router.post('/join', (req, res)=>{
-	var email = req.body.email;
-	var password = req.body.password;
+	let email    = req.body.email;
+	let password = req.body.password;
 	
 	((params) => {
 		return new Promise((resolve, reject) => {
@@ -149,11 +149,11 @@ router.post('/join', (req, res)=>{
 		if (result) {
 			res.json(result);
 		}else{
-			new Error("TxError::Rollback");
+			throw new Error("TxError::Rollback");
 		}		
 	})
 	.catch(function(err){
-		logger.error(err.toString());
+		logger.error(`${err.message}`);
 		res.send('failure');
 	})
 });

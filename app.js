@@ -41,7 +41,7 @@ app.use(session({
 
 
 // routes/index.js all routes load
-app.use('/api', require('./routes')); 
+app.use('', require('./routes'));
 
 
 app.listen(env.APP_PORT, function () {

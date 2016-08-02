@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define('User', 
+	let User = sequelize.define('User', 
 	{
 		user_id    : { 
 			type          : DataTypes.INTEGER,
@@ -25,4 +25,6 @@ module.exports = function (sequelize, DataTypes) {
 		freezeTableName: true,
 		timestamps: true
 	});
+
+	return User;
 };

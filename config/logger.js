@@ -40,6 +40,7 @@ switch (process.env.NODE_ENV) {
 
 logger.configure(configObj);
 let defaultLogger = (level, logStr) => {
+	logStr ? logStr : "EMPTY LOG MSG";
 	return logger.log(level, '%s', logStr);
 }
 

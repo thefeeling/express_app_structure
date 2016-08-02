@@ -1,19 +1,39 @@
 const express = require('express');
 const router = express.Router();
-
-// Common Logger
+const models = require('../models');
 const logger = require('../config/logger');
-
-//router.use('/api', require("./api/content")); // API
-
-//router.use(function timeLog(req, res, next) {
-//	console.log('Time: ', Date.now());
-//	next();
-//});
+const sqlMap = require('../models/sqlmap/query');
 
 router.get('/', (req, res) => {
-	logger.info('Hello distributed log files!');
-	res.send('/content');
+	let option = {
+		where: { use_yn: 1 },
+		include: [
+			{ model: models.User, required: true },
+			{ model: models.BoardCategory, required: true }
+		],
+		benchmark : true
+	}
+	models.Board.findAll(option)
+	.then((result)=>{
+		logger.info(result)
+		res.json(result);
+	}).catch((err)=>{
+		res.send("failure");
+	});
+});
+
+router.get('/rawQueryTest', (req, res) => {
+	let params = {
+		test : 1
+	}
+	//models.rawQuery.select(sqlMap.validateQuery)
+	models.rawQuery.select(sqlMap.rawQueryTest, params)
+	.then((results) => {
+		logger.debug(results);
+		res.send(results);
+	}).catch((err)=>{
+		res.send("failure");
+	});
 });
 
 router.get('/about', (req, res) => {
