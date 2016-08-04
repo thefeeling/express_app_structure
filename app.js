@@ -11,12 +11,10 @@ let redisStore = require('connect-redis')(session);
 let client = redis.createClient({
 	host: env.APP_REDIS_HOST
 });
-
-// sequelize
-var models = require('./models');
-
+let models = require('./models'); // sequelize
 
 app.use(httpLogger(env.APP_LOG_LEVEL));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('trust proxy', true);
@@ -34,14 +32,14 @@ app.use(session({
 		db: 0
 	}),
 	saveUninitialized: false, // don't create session until something stored,
-	resave: false, // don't save session if unmodified,
+	resave: false,            // don't save session if unmodified,
 	cookie: { expires: true, maxAge: 5 * 60 * 1000 }
 }));
 
-
-
 // routes/index.js all routes load
 app.use('', require('./routes'));
+
+
 
 
 app.listen(env.APP_PORT, function () {

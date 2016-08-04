@@ -6,17 +6,37 @@ let config = {
 			foreignKey : 'board_category'
 		});
 
-		db.Board.belongsTo(db.BoardCategory, {
-			foreignKey: 'board_category'
-		});
-
 		db.User.hasMany(db.Board, {
 			foreignKey: 'user_id'
+		});
+
+		db.User.hasMany(db.BoardComment, {
+			foreignKey: 'user_id'
+		});
+
+		db.Board.hasMany(db.BoardComment, {
+			foreignKey: 'board_id'
+		});		
+
+		db.Board.belongsTo(db.BoardCategory, {
+			foreignKey: 'board_category'
 		});
 
 		db.Board.belongsTo(db.User, {
 			foreignKey: 'user_id'
 		});
+
+		db.BoardComment.belongsTo(db.User, {
+			foreignKey: 'user_id'
+		});
+
+		db.BoardComment.belongsTo(db.Board, {
+			foreignKey: 'board_id'
+		});
+
+
+
+
 	},
 	initHooks: function (db) {
 		// db.Publisher.hook('beforeCreate', function () {

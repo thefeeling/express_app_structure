@@ -13,8 +13,7 @@ module.exports = (sequelize, DataTypes)=>{
 		board_category : {
 			type : DataTypes.INTEGER,
 			allowNull: false
-			//,
-			//references: {
+			//,references: {
 			//	model: models.BoardCategory, 
 			//	key: 'board_category'
 			//}

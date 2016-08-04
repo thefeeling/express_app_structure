@@ -32,7 +32,7 @@ fs.readdirSync(__dirname)
 
 	// 강제로 삭제 후 생성
 	// Dev/Pro 분기 처리해야 함.
-	db[model.name].sync({force:true});
+	// db[model.name].sync({force:true});
 });
 
 /*
@@ -51,15 +51,16 @@ setTimeout(function(){
 db.rawQuery = {
 	select : (sql, params) => {
 		try {
-			if(!sql){
-				throw new Error("rawQuery::Empty SQL")
+			if(!sql || !(typeof sql === "string")){
+				throw new Error("rawQuery::Empty SQL or No SQL Statement")
 			}
 
 			if(!params){
 				params = {};
 				logger.info("rawQuery Execution -> Null Or Undefined Params");
 			}
-
+			
+			// Return Promise
 			return sequelize.query(sql, {
 				replacements : params, 
 				type: sequelize.QueryTypes.SELECT

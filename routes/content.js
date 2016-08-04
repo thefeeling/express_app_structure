@@ -13,6 +13,8 @@ router.get('/', (req, res) => {
 		],
 		benchmark : true
 	}
+
+	
 	models.Board.findAll(option)
 	.then((result)=>{
 		logger.info(result)
