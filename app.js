@@ -39,9 +39,6 @@ app.use(session({
 // routes/index.js all routes load
 app.use('', require('./routes'));
 
-
-
-
 app.listen(env.APP_PORT, function () {
 	logger.info(`Express Folder Structure App Init Port : ${env.APP_PORT}`);
 });

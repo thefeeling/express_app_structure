@@ -5,6 +5,8 @@ const logger    = require('../config/logger');
 const sqlMap    = require('../models/sqlmap/query');
 const router    = express.Router();
 
+const jsonPostVerify = require('./middlewares/jsonPostVerify');
+const responseMsg    = require('../common/responseMsg');
 
 /**
  * board category info
@@ -75,6 +77,10 @@ router.get('/category/:boardCategory', (req, res) => {
 	})
 });
 
+
+/**
+ * 
+ */
 router.get('/view/:boardId', (req,res) => {
 	let boardId = req.params.boardId,
 		where = {
@@ -98,9 +104,52 @@ router.get('/view/:boardId', (req,res) => {
 	});
 });
 
-router.post('/write', (req,res) => {
-	logger.info("multiple rows write test");
-	res.json(req.body);
+
+/**
+ * 
+ */
+router.post('/write', jsonPostVerify, (req,res) => {
+	try {
+		let body = !(Array.isArray(req.body)) && typeof req.body === "object" ? req.body : {},
+			boardCategory = body.boardCategory,
+			subject       = body.boardSubject,
+			contents      = body.boardContents;
+
+		let insertObj = {
+			"board_category" : 
+				(body.boardCategory === "string") && validator.isNumeric(body.boardCategory) ? 
+				parseInt(body.boardCategory, 10) : (typeof body.boardCategory === "number" ? body.boardCategory : false),
+			"board_subject"  : 
+				!(validator.isNull(subject)) ? subject  : "",
+			"board_contents" : 
+				!(validator.isNull(contents)) ? contents : "",
+			"use_yn" : 1
+		}
+
+		models.Board.create(insertObj)
+		.then((results) => {
+			logger.info(results);
+			res.json(responseMsg.object(200, "[SUCCESS::INSERT]"));
+		})
+		.catch((err) => {
+			logger.error(`${err.message}`);
+			res.json(responseMsg.object(300, "[ERROR::DB INSERT ERROR]"));
+		})
+	} catch (err) {
+		logger.error(`${err.message}`);
+		res.json(responseMsg.object(300, "[ERROR::VALUE SETTING]"));
+	}
+
+	// let category = req.body.boardCategory,
+	// 	subject  = req.body.boardSubject,
+	// 	contents = req.body.boardContents,
+	// 	insertObj = {
+	// 		"board_category" : !(validator.isNull(category)) ? category : "",
+	// 		"board_subject"  : !(validator.isNull(subject))  ? subject  : "",
+	// 		"board_contents" : !(validator.isNull(contents)) ? contents : ""
+	// 	}
+	// console.log(req.rtnJsonFormat);
+	// res.json(req.body);
 })
 
 

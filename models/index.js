@@ -1,13 +1,13 @@
 /**
  * Model add && DB Connect
  */
-const fs = require('fs');
-const path = require('path');
-const config = require('./config');
-const ENV = require('../config/env');
-const logger = require('../config/logger');
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(ENV.DB_DATABASE, ENV.DB_ID, ENV.DB_PW, {
+const fs         =  require('fs');
+const path       =  require('path');
+const config     =  require('./config');
+const ENV        =  require('../config/env');
+const logger     =  require('../config/logger');
+const Sequelize  =  require('sequelize');
+const sequelize  =  new Sequelize(ENV.DB_DATABASE, ENV.DB_ID, ENV.DB_PW, {
 	host: ENV.DB_HOST,
 	logging : (queryStr) => {
 		return logger.info(queryStr);
